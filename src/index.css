@@ -13,8 +13,8 @@
   --color-border: #e2d9d1;
   --color-border-light: #ede6de;
 
-  --font-display: "Cormorant Garamond", Georgia, serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
 }
 
 *, *::before, *::after {
@@ -28,7 +28,7 @@ html {
 body {
   background-color: #faf7f4;
   color: #1a1714;
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: "DM Sans", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

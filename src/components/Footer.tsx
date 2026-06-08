@@ -14,7 +14,7 @@ export default function Footer() {
               <span className="font-display text-lg text-white/90 font-medium">Studio Trikon</span>
             </div>
             <p className="font-body text-sm leading-relaxed max-w-xs">
-              Architecture and design studio based in Pune. Building spaces that last.
+              Architecture and design studio based in Ahmedabad. Building spaces that last.
             </p>
           </div>
 
@@ -42,8 +42,8 @@ export default function Footer() {
               <p>hello@studiotrikon.in</p>
               <p>+91 98765 43210</p>
               <p className="mt-3 leading-relaxed">
-                Studio Trikon, Koregaon Park<br />
-                Pune 411001, Maharashtra
+                Studio Trikon, Prahladnagar<br />
+                Ahmedabad 380015, Gujarat
               </p>
             </address>
           </div>

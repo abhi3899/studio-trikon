@@ -45,8 +45,8 @@ export default function Contact() {
                   <MapPin size={15} className="text-accent mt-0.5 shrink-0" />
                   <address className="not-italic font-body text-sm text-muted leading-relaxed">
                     Studio Trikon<br />
-                    12, Koregaon Park Lane<br />
-                    Pune 411001, Maharashtra
+                    Prahladnagar, SG Road<br />
+                    Ahmedabad 380015, Gujarat
                   </address>
                 </li>
                 <li className="flex items-center gap-3">

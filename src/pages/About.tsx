@@ -35,10 +35,10 @@ export default function About() {
               <span className="italic text-muted">one practice.</span>
             </h1>
             <p className="font-body text-base text-muted mt-6 leading-relaxed max-w-sm">
-              Studio Trikon was founded in 2012 by Arjun Desai and Meera Kulkarni after years
-              of working separately in Mumbai and abroad. The studio is their answer to a
-              shared belief: that good architecture should be quiet, contextual, and
-              deeply personal.
+              Studio Trikon was founded in 2022 by Harshada Bhosale and Shivam Kumaria after
+              years of working across leading practices in India. Based in Ahmedabad, the studio
+              is their shared answer to a single belief: that good architecture should be quiet,
+              contextual, and deeply personal.
             </p>
           </div>
           <div className="aspect-[4/3] overflow-hidden bg-border">
@@ -58,41 +58,42 @@ export default function About() {
           <h2 className="font-display text-display-md text-ink mt-2 mb-14">Meet the architects</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
-            {/* Architect 1 */}
+            {/* Harshada Bhosale */}
             <div>
               <div className="aspect-[3/4] overflow-hidden bg-surface mb-6">
                 <LazyImage
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&q=80"
-                  alt="Arjun Desai"
+                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=700&q=80"
+                  alt="Harshada Bhosale"
                   className="w-full h-full"
                 />
               </div>
-              <h3 className="font-display text-2xl text-ink">Arjun Desai</h3>
+              <h3 className="font-display text-2xl text-ink">Harshada Bhosale</h3>
               <p className="font-body text-sm text-accent mt-1 mb-4 tracking-wide">Co-founder, Principal Architect</p>
               <p className="font-body text-sm text-muted leading-relaxed">
-                Arjun studied architecture at CEPT Ahmedabad and spent six years in Zaha Hadid
-                Architects, London, before returning to India. He leads the studio's
-                residential and urban projects and is drawn to questions of threshold and
-                transition — how a building opens itself to the street, the garden, the sky.
+                Harshada studied architecture at CEPT Ahmedabad and worked across residential
+                and cultural projects at leading practices in Pune and Mumbai before co-founding
+                Trikon. She leads the studio's residential projects and is drawn to questions of
+                light, threshold, and the way a house holds a family's daily life.
               </p>
             </div>
 
-            {/* Architect 2 */}
+            {/* Shivam Kumaria */}
             <div>
               <div className="aspect-[3/4] overflow-hidden bg-surface mb-6">
                 <LazyImage
-                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=700&q=80"
-                  alt="Meera Kulkarni"
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=700&q=80"
+                  alt="Shivam Kumaria"
                   className="w-full h-full"
                 />
               </div>
-              <h3 className="font-display text-2xl text-ink">Meera Kulkarni</h3>
+              <h3 className="font-display text-2xl text-ink">Shivam Kumaria</h3>
               <p className="font-body text-sm text-accent mt-1 mb-4 tracking-wide">Co-founder, Design Director</p>
               <p className="font-body text-sm text-muted leading-relaxed">
-                Meera graduated from SPA Delhi and worked with Studio Mumbai and Snøhetta
-                before establishing Trikon. Her practice is rooted in materials and craft —
-                she makes regular visits to stone quarries, timber yards, and tile workshops.
-                She leads the studio's interior projects and all joinery design.
+                Shivam graduated from CEPT and spent several years working on commercial and
+                hospitality projects across Gujarat and Rajasthan before establishing Trikon.
+                His practice is rooted in materials and making — he makes regular visits to
+                stone quarries, tile workshops, and fabricators on site. He leads all interior
+                and commercial work at the studio.
               </p>
             </div>
           </div>

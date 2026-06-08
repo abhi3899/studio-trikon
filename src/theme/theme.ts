@@ -15,8 +15,8 @@ export const theme = {
     overlay: 'rgba(26,23,20,0.6)',
   },
   fonts: {
-    display: '"Cormorant Garamond", Georgia, serif',
-    body: '"Inter", system-ui, sans-serif',
+    display: '"Playfair Display", Georgia, serif',
+    body: '"DM Sans", system-ui, sans-serif',
   },
   spacing: {
     navHeight: '72px',

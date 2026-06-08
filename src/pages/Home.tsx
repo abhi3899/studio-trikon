@@ -61,70 +61,86 @@ export default function Home() {
   return (
     <main>
       {/* ─── HERO ─────────────────────────────────────────────── */}
-      <section className="relative h-screen min-h-[600px] overflow-hidden bg-ink">
+      <section className="relative h-screen min-h-[680px] overflow-hidden bg-ink">
         {/* Background image with parallax */}
         <div ref={heroRef} className="absolute inset-0 will-change-transform">
           {heroLoaded ? (
             <img
               src={HERO_IMAGE}
               alt="Architecture hero"
-              className="w-full h-full object-cover opacity-60"
+              className="w-full h-full object-cover opacity-50"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-ink to-ink/80 animate-pulse" />
           )}
         </div>
 
-        {/* Dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-transparent to-ink/80" />
+        {/* Gradient: subtle top, strong bottom */}
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-ink/10 to-ink" />
 
-        {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-end pb-20 px-6 max-w-7xl mx-auto">
-          <div className="max-w-3xl">
-            <div className="overflow-hidden mb-6">
-              <SectionLabel light>Architecture & Design Studio</SectionLabel>
-            </div>
+        {/* Vertical label — right side */}
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 z-10 hidden lg:flex flex-col items-center gap-3">
+          <div className="w-px h-16 bg-white/20" />
+          <span className="font-body text-[10px] tracking-[0.25em] uppercase text-white/30 [writing-mode:vertical-rl]">
+            Ahmedabad · Est. 2022
+          </span>
+          <div className="w-px h-16 bg-white/20" />
+        </div>
 
-            <div className="overflow-hidden mb-3">
-              <h1
-                className="font-display text-display-2xl text-white leading-none"
-                style={{ animationDelay: '100ms' }}
-              >
-                We build spaces
-              </h1>
-            </div>
-            <div className="overflow-hidden mb-8">
-              <h1 className="font-display text-display-2xl text-white/50 italic leading-none">
-                that hold memory.
-              </h1>
-            </div>
+        {/* Main content */}
+        <div className="relative z-10 h-full flex flex-col justify-between px-6 max-w-7xl mx-auto">
+          {/* Nav spacer */}
+          <div className="h-[72px] shrink-0" />
 
-            <p className="font-body text-base text-white/60 max-w-sm leading-relaxed mb-10">
-              Pune-based studio crafting residential, commercial, and interior
-              spaces with precision and warmth.
-            </p>
+          {/* Centre: empty — lets the image breathe */}
+          <div className="flex-1" />
 
-            <div className="flex items-center gap-6">
+          {/* Bottom text block */}
+          <div className="pb-0">
+            <SectionLabel light>Architecture · Interior · Ahmedabad</SectionLabel>
+
+            <h1 className="font-display text-display-2xl text-white leading-[1.0] mt-5">
+              We build spaces
+            </h1>
+            <h1 className="font-display text-display-2xl italic leading-[1.0] mb-8"
+              style={{ color: '#c1603a' }}>
+              that hold memory.
+            </h1>
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
               <Link
                 to="/projects"
-                className="inline-flex items-center gap-2 bg-accent text-white font-body text-sm tracking-wide px-6 py-3 hover:bg-accent-hover transition-colors duration-200"
+                className="inline-flex items-center gap-2 bg-accent text-white font-body text-sm tracking-wide px-6 py-3.5 hover:bg-accent-hover transition-colors duration-200 w-fit"
               >
                 See Our Work <ArrowRight size={14} />
               </Link>
               <Link
                 to="/about"
-                className="font-body text-sm text-white/60 hover:text-white transition-colors tracking-wide"
+                className="font-body text-sm text-white/50 hover:text-white transition-colors tracking-wide"
               >
-                About Studio
+                About the Studio →
               </Link>
             </div>
+          </div>
+
+          {/* Stats strip */}
+          <div className="mt-10 border-t border-white/10 grid grid-cols-3 divide-x divide-white/10">
+            {[
+              ['28+', 'Projects Built'],
+              ['Ahmedabad', 'Gujarat, India'],
+              ['2 Years', 'Of Practice'],
+            ].map(([num, label]) => (
+              <div key={label} className="px-0 py-4 first:pl-0 sm:px-6">
+                <p className="font-display text-base text-white font-medium">{num}</p>
+                <p className="font-body text-[11px] text-white/40 mt-0.5 tracking-wide">{label}</p>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 right-8 z-10 flex flex-col items-center gap-2 text-white/40">
-          <span className="font-body text-[10px] tracking-[0.2em] uppercase rotate-90 origin-center mb-6">Scroll</span>
-          <ArrowDown size={14} className="animate-bounce" />
+        <div className="absolute bottom-[88px] right-8 z-10 lg:hidden flex flex-col items-center gap-2 text-white/30">
+          <ArrowDown size={13} className="animate-bounce" />
         </div>
       </section>
 
@@ -194,7 +210,7 @@ export default function Home() {
             </div>
             {/* Floating stat */}
             <div className="absolute -bottom-6 -right-6 bg-ink text-white p-6 w-36">
-              <p className="font-display text-4xl text-accent">12+</p>
+              <p className="font-display text-4xl text-accent">2</p>
               <p className="font-body text-xs text-white/60 mt-1">Years of practice</p>
             </div>
           </div>
@@ -207,9 +223,9 @@ export default function Home() {
               <span className="italic text-muted">starts with listening.</span>
             </h2>
             <p className="font-body text-base text-muted leading-relaxed mb-6">
-              We're Arjun and Meera — two architects who met in school and never stopped arguing
-              about buildings. Studio Trikon is our attempt to resolve that argument into
-              something real.
+              We're Harshada and Shivam — two architects who met at CEPT and never stopped
+              debating about buildings. Studio Trikon is how we resolved that debate into
+              something you can walk through.
             </p>
             <p className="font-body text-base text-muted leading-relaxed mb-10">
               Every project begins with the client's life, not our portfolio. We ask about
@@ -217,7 +233,7 @@ export default function Home() {
               when they walk in. The rest follows.
             </p>
             <div className="grid grid-cols-3 gap-6 border-t border-border pt-8">
-              {[['28', 'Projects Built'], ['3', 'States'], ['100%', 'Client Referrals']].map(
+              {[['28+', 'Projects Built'], ['Gujarat', 'Home State'], ['100%', 'Client Referrals']].map(
                 ([num, label]) => (
                   <div key={label}>
                     <p className="font-display text-3xl text-ink">{num}</p>

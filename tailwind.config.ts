@@ -18,8 +18,8 @@ export default {
         'border-light': '#ede6de',
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        body: ['"Inter"', 'system-ui', 'sans-serif'],
+        display: ['"Playfair Display"', 'Georgia', 'serif'],
+        body: ['"DM Sans"', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'display-2xl': ['clamp(3.5rem,8vw,7rem)', { lineHeight: '1.05', letterSpacing: '-0.02em' }],
