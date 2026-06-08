@@ -75,21 +75,27 @@ export default function ProjectForm({ existing }: Props) {
     return Object.keys(e).length === 0
   }
 
+  const [saveError, setSaveError] = useState('')
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) return
     setSaving(true)
+    setSaveError('')
 
-    const id = existing?.id || `p${Date.now()}`
-    const project: Project = { id, ...form }
-
-    if (existing) {
-      updateProject(project)
-    } else {
-      addProject(project)
+    try {
+      const id = existing?.id || `p${Date.now()}`
+      const project: Project = { id, ...form }
+      if (existing) {
+        await updateProject(project)
+      } else {
+        await addProject(project)
+      }
+      navigate('/admin/dashboard')
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Save failed. Check your connection.')
+      setSaving(false)
     }
-
-    navigate('/admin/dashboard')
   }
 
   const inputClass = (key: string) =>
@@ -386,6 +392,9 @@ export default function ProjectForm({ existing }: Props) {
         </section>
 
         {/* Submit */}
+        {saveError && (
+          <p className="font-body text-sm text-red-500 bg-red-50 border border-red-200 px-4 py-3">{saveError}</p>
+        )}
         <div className="flex items-center justify-between">
           <button
             type="button"

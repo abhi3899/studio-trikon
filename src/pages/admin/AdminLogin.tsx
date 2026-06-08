@@ -1,24 +1,33 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Lock, Eye, EyeOff } from 'lucide-react'
-
-const ADMIN_PASS = 'trikon2024'
-const ADMIN_KEY = 'studio_trikon_admin'
+import { Lock, Eye, EyeOff, Mail } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 
 export default function AdminLogin() {
-  const [pass, setPass] = useState('')
-  const [show, setShow] = useState(false)
-  const [error, setError] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPass, setShowPass] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (pass === ADMIN_PASS) {
-      sessionStorage.setItem(ADMIN_KEY, '1')
-      navigate('/admin/dashboard')
+    setError('')
+    setLoading(true)
+
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    })
+
+    setLoading(false)
+
+    if (authError) {
+      setError('Incorrect email or password.')
+      setPassword('')
     } else {
-      setError(true)
-      setPass('')
+      navigate('/admin/dashboard')
     }
   }
 
@@ -36,19 +45,33 @@ export default function AdminLogin() {
           <p className="font-body text-sm text-muted mt-1">Admin Portal</p>
         </div>
 
-        <form onSubmit={submit} className="bg-bg border border-border p-8">
-          <div className="flex items-center gap-2 mb-6">
+        <form onSubmit={submit} className="bg-bg border border-border p-8 space-y-4">
+          <div className="flex items-center gap-2 mb-2">
             <Lock size={14} className="text-muted" />
-            <span className="font-body text-sm text-muted">Enter admin password</span>
+            <span className="font-body text-sm text-muted">Sign in to continue</span>
           </div>
 
-          <div className="relative mb-4">
+          {/* Email */}
+          <div className="relative">
+            <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
             <input
-              type={show ? 'text' : 'password'}
-              value={pass}
-              onChange={e => { setPass(e.target.value); setError(false) }}
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               required
               autoFocus
+              className="w-full bg-surface border border-border pl-9 pr-4 py-3 font-body text-sm text-ink focus:outline-none focus:border-ink transition-colors"
+              placeholder="admin@studiotrikon.in"
+            />
+          </div>
+
+          {/* Password */}
+          <div className="relative">
+            <input
+              type={showPass ? 'text' : 'password'}
+              value={password}
+              onChange={e => { setPassword(e.target.value); setError('') }}
+              required
               className={`w-full bg-surface border px-4 py-3 pr-10 font-body text-sm text-ink focus:outline-none transition-colors ${
                 error ? 'border-red-400' : 'border-border focus:border-ink'
               }`}
@@ -56,27 +79,24 @@ export default function AdminLogin() {
             />
             <button
               type="button"
-              onClick={() => setShow(v => !v)}
+              onClick={() => setShowPass(v => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ink transition-colors"
             >
-              {show ? <EyeOff size={15} /> : <Eye size={15} />}
+              {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
           </div>
 
           {error && (
-            <p className="font-body text-xs text-red-500 mb-4">Incorrect password. Try again.</p>
+            <p className="font-body text-xs text-red-500">{error}</p>
           )}
 
           <button
             type="submit"
-            className="w-full bg-ink text-white font-body text-sm py-3 hover:bg-accent transition-colors duration-200"
+            disabled={loading}
+            className="w-full bg-ink text-white font-body text-sm py-3 hover:bg-accent transition-colors duration-200 disabled:opacity-60"
           >
-            Enter Admin
+            {loading ? 'Signing in…' : 'Sign In'}
           </button>
-
-          <p className="font-body text-xs text-muted text-center mt-5">
-            Default password: <code className="font-mono bg-surface px-1.5 py-0.5">trikon2024</code>
-          </p>
         </form>
       </div>
     </main>

@@ -1,21 +1,35 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { PlusCircle, Pencil, Trash2, Star, StarOff } from 'lucide-react'
+import { PlusCircle, Pencil, Trash2, Star, StarOff, Database } from 'lucide-react'
 import { useProjects } from '../../context/ProjectContext'
 import LazyImage from '../../components/LazyImage'
 
 export default function AdminDashboard() {
-  const { projects, deleteProject, updateProject } = useProjects()
+  const { projects, deleteProject, updateProject, seedDatabase, loading } = useProjects()
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [seeding, setSeeding] = useState(false)
+  const [seedError, setSeedError] = useState('')
 
-  const handleDelete = (id: string) => {
-    deleteProject(id)
+  const handleDelete = async (id: string) => {
+    await deleteProject(id)
     setConfirmDelete(null)
   }
 
-  const toggleFeatured = (id: string) => {
+  const toggleFeatured = async (id: string) => {
     const p = projects.find(x => x.id === id)
-    if (p) updateProject({ ...p, featured: !p.featured })
+    if (p) await updateProject({ ...p, featured: !p.featured })
+  }
+
+  const handleSeed = async () => {
+    setSeeding(true)
+    setSeedError('')
+    try {
+      await seedDatabase()
+    } catch (e) {
+      setSeedError(e instanceof Error ? e.message : 'Seed failed')
+    } finally {
+      setSeeding(false)
+    }
   }
 
   return (
@@ -34,6 +48,27 @@ export default function AdminDashboard() {
           Add Project
         </Link>
       </div>
+
+      {/* Empty DB — seed prompt */}
+      {!loading && projects.length === 0 && (
+        <div className="mb-8 border border-dashed border-border bg-surface p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <Database size={20} className="text-muted shrink-0" />
+          <div className="flex-1">
+            <p className="font-body text-sm font-medium text-ink">Database is empty</p>
+            <p className="font-body text-xs text-muted mt-0.5">
+              Load the demo projects and testimonials to get started, or add your own above.
+            </p>
+            {seedError && <p className="font-body text-xs text-red-500 mt-1">{seedError}</p>}
+          </div>
+          <button
+            onClick={handleSeed}
+            disabled={seeding}
+            className="inline-flex items-center gap-2 bg-ink text-white font-body text-xs px-4 py-2.5 hover:bg-accent transition-colors disabled:opacity-50 shrink-0"
+          >
+            {seeding ? 'Loading…' : 'Load demo data'}
+          </button>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">

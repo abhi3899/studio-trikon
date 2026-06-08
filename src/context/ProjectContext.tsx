@@ -1,69 +1,114 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 import type { Project, Testimonial } from '../types'
+import { supabase, rowToProject, projectToRow, rowToTestimonial } from '../lib/supabase'
 import { seedProjects, seedTestimonials } from '../data/seedData'
-
-const STORAGE_KEY = 'studio_trikon_projects'
-const TESTIMONIALS_KEY = 'studio_trikon_testimonials'
 
 interface ProjectContextValue {
   projects: Project[]
   testimonials: Testimonial[]
-  addProject: (project: Project) => void
-  updateProject: (project: Project) => void
-  deleteProject: (id: string) => void
-  addTestimonial: (t: Testimonial) => void
-  updateTestimonial: (t: Testimonial) => void
-  deleteTestimonial: (id: string) => void
+  loading: boolean
+  addProject: (p: Project) => Promise<void>
+  updateProject: (p: Project) => Promise<void>
+  deleteProject: (id: string) => Promise<void>
+  addTestimonial: (t: Testimonial) => Promise<void>
+  updateTestimonial: (t: Testimonial) => Promise<void>
+  deleteTestimonial: (id: string) => Promise<void>
   getProject: (id: string) => Project | undefined
+  seedDatabase: () => Promise<void>
 }
 
 const ProjectContext = createContext<ProjectContextValue | null>(null)
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
-  const [projects, setProjects] = useState<Project[]>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      return stored ? JSON.parse(stored) : seedProjects
-    } catch {
-      return seedProjects
-    }
-  })
-
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => {
-    try {
-      const stored = localStorage.getItem(TESTIMONIALS_KEY)
-      return stored ? JSON.parse(stored) : seedTestimonials
-    } catch {
-      return seedTestimonials
-    }
-  })
+  const [projects, setProjects] = useState<Project[]>([])
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects))
-  }, [projects])
+    Promise.all([fetchProjects(), fetchTestimonials()]).finally(() =>
+      setLoading(false)
+    )
+  }, [])
 
-  useEffect(() => {
-    localStorage.setItem(TESTIMONIALS_KEY, JSON.stringify(testimonials))
-  }, [testimonials])
+  async function fetchProjects() {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('created_at', { ascending: false })
+    if (error) { console.error('fetchProjects:', error.message); return }
+    setProjects((data ?? []).map(rowToProject))
+  }
 
-  const addProject = (p: Project) => setProjects(prev => [p, ...prev])
-  const updateProject = (p: Project) =>
+  async function fetchTestimonials() {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('*')
+      .order('created_at', { ascending: true })
+    if (error) { console.error('fetchTestimonials:', error.message); return }
+    setTestimonials((data ?? []).map(rowToTestimonial))
+  }
+
+  const addProject = async (p: Project) => {
+    const { error } = await supabase.from('projects').insert(projectToRow(p))
+    if (error) throw new Error(error.message)
+    setProjects(prev => [p, ...prev])
+  }
+
+  const updateProject = async (p: Project) => {
+    const { error } = await supabase
+      .from('projects')
+      .update(projectToRow(p))
+      .eq('id', p.id)
+    if (error) throw new Error(error.message)
     setProjects(prev => prev.map(x => (x.id === p.id ? p : x)))
-  const deleteProject = (id: string) =>
+  }
+
+  const deleteProject = async (id: string) => {
+    const { error } = await supabase.from('projects').delete().eq('id', id)
+    if (error) throw new Error(error.message)
     setProjects(prev => prev.filter(x => x.id !== id))
+  }
+
+  const addTestimonial = async (t: Testimonial) => {
+    const { error } = await supabase.from('testimonials').insert(t)
+    if (error) throw new Error(error.message)
+    setTestimonials(prev => [...prev, t])
+  }
+
+  const updateTestimonial = async (t: Testimonial) => {
+    const { error } = await supabase
+      .from('testimonials')
+      .update(t)
+      .eq('id', t.id)
+    if (error) throw new Error(error.message)
+    setTestimonials(prev => prev.map(x => (x.id === t.id ? t : x)))
+  }
+
+  const deleteTestimonial = async (id: string) => {
+    const { error } = await supabase.from('testimonials').delete().eq('id', id)
+    if (error) throw new Error(error.message)
+    setTestimonials(prev => prev.filter(x => x.id !== id))
+  }
+
   const getProject = (id: string) => projects.find(x => x.id === id)
 
-  const addTestimonial = (t: Testimonial) => setTestimonials(prev => [t, ...prev])
-  const updateTestimonial = (t: Testimonial) =>
-    setTestimonials(prev => prev.map(x => (x.id === t.id ? t : x)))
-  const deleteTestimonial = (id: string) =>
-    setTestimonials(prev => prev.filter(x => x.id !== id))
+  // One-time seed: inserts demo data when the DB is empty
+  const seedDatabase = async () => {
+    const rows = seedProjects.map(projectToRow)
+    const { error: pe } = await supabase.from('projects').insert(rows)
+    if (pe) throw new Error(pe.message)
+    const { error: te } = await supabase.from('testimonials').insert(seedTestimonials)
+    if (te) throw new Error(te.message)
+    setProjects(seedProjects)
+    setTestimonials(seedTestimonials)
+  }
 
   return (
     <ProjectContext.Provider
       value={{
         projects,
         testimonials,
+        loading,
         addProject,
         updateProject,
         deleteProject,
@@ -71,6 +116,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         updateTestimonial,
         deleteTestimonial,
         getProject,
+        seedDatabase,
       }}
     >
       {children}

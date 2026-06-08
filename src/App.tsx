@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { ProjectProvider } from './context/ProjectContext'
+import { ProjectProvider, useProjects } from './context/ProjectContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -16,6 +16,19 @@ import EditProject from './pages/admin/EditProject'
 import AdminTestimonials from './pages/admin/AdminTestimonials'
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
+  const { loading } = useProjects()
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <polygon points="14,2 26,24 2,24" fill="none" stroke="#c1603a" strokeWidth="1.5" />
+          </svg>
+          <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    )
+  }
   return (
     <>
       <Navbar />

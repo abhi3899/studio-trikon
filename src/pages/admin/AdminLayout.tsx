@@ -1,7 +1,6 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { LayoutGrid, PlusCircle, MessageSquareQuote, LogOut, ExternalLink } from 'lucide-react'
-
-const ADMIN_KEY = 'studio_trikon_admin'
+import { supabase } from '../../lib/supabase'
 
 const links = [
   { to: '/admin/dashboard', icon: LayoutGrid, label: 'Projects' },
@@ -11,8 +10,8 @@ const links = [
 
 export default function AdminLayout() {
   const navigate = useNavigate()
-  const logout = () => {
-    sessionStorage.removeItem(ADMIN_KEY)
+  const logout = async () => {
+    await supabase.auth.signOut()
     navigate('/admin')
   }
 

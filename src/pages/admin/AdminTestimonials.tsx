@@ -31,16 +31,20 @@ export default function AdminTestimonials() {
     setForm(EMPTY)
   }
 
-  const save = () => {
+  const save = async () => {
     if (!form.name.trim() || !form.quote.trim()) return
-    if (editing) {
-      updateTestimonial({ id: editing, ...form })
-      setEditing(null)
-    } else {
-      addTestimonial({ id: `t${Date.now()}`, ...form })
-      setAdding(false)
+    try {
+      if (editing) {
+        await updateTestimonial({ id: editing, ...form })
+        setEditing(null)
+      } else {
+        await addTestimonial({ id: `t${Date.now()}`, ...form })
+        setAdding(false)
+      }
+      setForm(EMPTY)
+    } catch (e) {
+      console.error('Save testimonial failed:', e)
     }
-    setForm(EMPTY)
   }
 
   const cancel = () => {
@@ -133,7 +137,7 @@ export default function AdminTestimonials() {
                   <div className="flex items-center gap-2 shrink-0">
                     {confirmDelete === t.id ? (
                       <>
-                        <button onClick={() => { deleteTestimonial(t.id); setConfirmDelete(null) }} className="font-body text-xs text-red-500 hover:text-red-700">Confirm</button>
+                        <button onClick={async () => { await deleteTestimonial(t.id); setConfirmDelete(null) }} className="font-body text-xs text-red-500 hover:text-red-700">Confirm</button>
                         <span className="text-border">|</span>
                         <button onClick={() => setConfirmDelete(null)} className="font-body text-xs text-muted hover:text-ink">Cancel</button>
                       </>
