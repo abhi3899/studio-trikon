@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ProjectProvider, useProjects } from './context/ProjectContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
+import CustomCursor from './components/CustomCursor'
 import Home from './pages/Home'
 import Projects from './pages/Projects'
 import ProjectDetail from './pages/ProjectDetail'
@@ -42,6 +44,8 @@ export default function App() {
   return (
     <ProjectProvider>
       <BrowserRouter>
+        <ScrollToTop />
+        <CustomCursor />
         <Routes>
           {/* Public site */}
           <Route

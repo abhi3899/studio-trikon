@@ -9,48 +9,56 @@ interface Props {
 }
 
 export default function ProjectCard({ project, index = 0 }: Props) {
+  const num = String(index + 1).padStart(2, '0')
+
   return (
-    <Link
-      to={`/projects/${project.id}`}
-      className="group block"
-      style={{ animationDelay: `${index * 80}ms` }}
-    >
+    <Link to={`/projects/${project.id}`} className="group block">
       {/* Image */}
-      <div className="relative overflow-hidden aspect-[4/3] bg-surface mb-4">
+      <div className="relative overflow-hidden aspect-[4/3] bg-surface">
+        {/* Index number */}
+        <span className="absolute top-4 left-4 z-10 font-body text-[11px] tracking-[0.18em] text-white/40 select-none">
+          {num}
+        </span>
+
         <LazyImage
           src={project.coverImage}
           alt={project.title}
           size="cover"
-          className="w-full h-full transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full transition-transform duration-700 ease-in-out group-hover:scale-[1.07]"
         />
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/20 transition-all duration-400 flex items-end p-5 opacity-0 group-hover:opacity-100">
-          <span className="inline-flex items-center gap-1.5 bg-bg text-ink text-xs font-body tracking-wide px-3 py-1.5 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            View Project <ArrowUpRight size={12} />
-          </span>
-        </div>
-        {/* Category badge */}
-        <div className="absolute top-4 left-4">
-          <span className="font-body text-[10px] tracking-[0.12em] uppercase bg-bg/90 backdrop-blur-sm text-muted px-2.5 py-1">
-            {project.category}
-          </span>
+
+        {/* Slide-up overlay */}
+        <div className="absolute inset-0 flex flex-col justify-end translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] bg-gradient-to-t from-ink/95 via-ink/70 to-transparent">
+          <div className="p-5 pb-6">
+            <p className="font-body text-[10px] tracking-[0.2em] uppercase text-accent mb-2">
+              {project.category}
+            </p>
+            <h3 className="font-display text-[1.35rem] text-white leading-tight">
+              {project.title}
+            </h3>
+            <p className="font-body text-xs text-white/45 mt-1">
+              {project.location} · {project.year}
+            </p>
+            <div className="mt-4 inline-flex items-center gap-1 text-white/60 font-body text-[11px] tracking-[0.1em] uppercase border-b border-white/20 pb-0.5">
+              View Project <ArrowUpRight size={11} className="ml-0.5" />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Info */}
-      <div className="flex items-start justify-between">
+      {/* Below card */}
+      <div className="pt-4 flex items-start justify-between">
         <div>
-          <h3 className="font-display text-xl text-ink group-hover:text-accent transition-colors leading-tight">
+          <h3 className="font-display text-xl text-ink group-hover:text-accent transition-colors duration-300 leading-tight">
             {project.title}
           </h3>
           <p className="font-body text-sm text-muted mt-0.5">
-            {project.location} — {project.year}
+            {project.location} · {project.year}
           </p>
         </div>
-        <ArrowUpRight
-          size={16}
-          className="text-subtle mt-1 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200 shrink-0"
-        />
+        <span className="font-body text-[10px] text-subtle/70 tracking-wider mt-1 select-none">
+          {num}
+        </span>
       </div>
     </Link>
   )
