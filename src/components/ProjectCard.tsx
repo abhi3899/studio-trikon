@@ -20,6 +20,7 @@ export default function ProjectCard({ project, index = 0 }: Props) {
         <LazyImage
           src={project.coverImage}
           alt={project.title}
+          size="cover"
           className="w-full h-full transition-transform duration-700 group-hover:scale-105"
         />
         {/* Hover overlay */}

@@ -75,7 +75,7 @@ export default function AdminDashboard() {
                 >
                   <td className="px-5 py-3">
                     <div className="w-10 h-10 overflow-hidden bg-surface shrink-0">
-                      <LazyImage src={p.coverImage} alt={p.title} className="w-full h-full" />
+                      <LazyImage src={p.coverImage} alt={p.title} size="thumbnail" className="w-full h-full" />
                     </div>
                   </td>
                   <td className="px-5 py-3">

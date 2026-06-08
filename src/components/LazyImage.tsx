@@ -1,31 +1,32 @@
 import { useLazyImage } from '../hooks/useLazyImage'
+import { getImageUrl, type ImageSize } from '../utils/imageUtils'
 
 interface LazyImageProps {
   src: string
   alt: string
   className?: string
-  placeholderClass?: string
+  size?: ImageSize
 }
 
-export default function LazyImage({ src, alt, className = '', placeholderClass = '' }: LazyImageProps) {
-  const { loaded, error } = useLazyImage(src)
+export default function LazyImage({ src, alt, className = '', size = 'cover' }: LazyImageProps) {
+  const resolved = getImageUrl(src, size)
+  const { loaded, error } = useLazyImage(resolved)
 
   if (error) {
     return (
-      <div className={`bg-surface flex items-center justify-center ${placeholderClass || className}`}>
-        <span className="text-subtle text-sm font-body">Image unavailable</span>
+      <div className={`bg-surface flex items-center justify-center ${className}`}>
+        <span className="text-subtle text-xs font-body">Image unavailable</span>
       </div>
     )
   }
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
-      {/* Placeholder shimmer */}
       {!loaded && (
-        <div className={`absolute inset-0 bg-gradient-to-r from-surface via-surface-hover to-surface animate-pulse ${placeholderClass}`} />
+        <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface-hover to-surface animate-pulse" />
       )}
       <img
-        src={src}
+        src={resolved}
         alt={alt}
         loading="lazy"
         decoding="async"

@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PlusCircle, Trash2, ArrowLeft, ExternalLink } from 'lucide-react'
+import { PlusCircle, Trash2, ArrowLeft, ExternalLink, CheckCircle2 } from 'lucide-react'
 import { useProjects } from '../../context/ProjectContext'
 import type { Project } from '../../types'
 import LazyImage from '../../components/LazyImage'
+import { resolveImageUrl, isGoogleDriveUrl, getImageUrl } from '../../utils/imageUtils'
 
 interface Props {
   existing?: Project
@@ -40,9 +41,11 @@ export default function ProjectForm({ existing }: Props) {
   const addImage = () => {
     const url = imageUrl.trim()
     if (!url) return
-    const updated = [...form.images, url]
+    // Always store the resolved URL so Drive links work immediately on the public site
+    const resolved = resolveImageUrl(url)
+    const updated = [...form.images, resolved]
     set('images', updated)
-    if (!form.coverImage) set('coverImage', url)
+    if (!form.coverImage) set('coverImage', resolved)
     setImageUrl('')
   }
 
@@ -215,27 +218,60 @@ export default function ProjectForm({ existing }: Props) {
             Project Images
           </h2>
 
-          <p className="font-body text-xs text-muted">
-            Paste image URLs (Unsplash, Google Drive direct link, Dropbox, Cloudinary, etc.)
-          </p>
+          {/* How to use Google Drive */}
+          <div className="bg-accent-light border border-accent/20 p-4 rounded-sm space-y-1.5">
+            <p className="font-body text-xs font-medium text-ink">How to add images from Google Drive:</p>
+            <ol className="font-body text-xs text-muted space-y-1 list-decimal list-inside">
+              <li>Upload your photo to Google Drive</li>
+              <li>Right-click the file → <strong>Share</strong> → set to <strong>"Anyone with the link"</strong></li>
+              <li>Copy the link and paste it below — it will be auto-converted ✓</li>
+            </ol>
+            <p className="font-body text-[11px] text-muted pt-1">Also works with: Unsplash, Cloudinary, Dropbox (direct links), or any public image URL.</p>
+          </div>
 
-          {/* URL input */}
-          <div className="flex gap-2">
-            <input
-              value={imageUrl}
-              onChange={e => setImageUrl(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addImage())}
-              className="flex-1 bg-surface border border-border px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:border-ink transition-colors"
-              placeholder="https://images.unsplash.com/..."
-            />
-            <button
-              type="button"
-              onClick={addImage}
-              className="inline-flex items-center gap-1.5 bg-ink text-white font-body text-sm px-4 py-2.5 hover:bg-accent transition-colors shrink-0"
-            >
-              <PlusCircle size={14} />
-              Add
-            </button>
+          {/* URL input with live preview */}
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <input
+                value={imageUrl}
+                onChange={e => setImageUrl(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addImage())}
+                className="flex-1 bg-surface border border-border px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:border-ink transition-colors"
+                placeholder="Paste Google Drive link or any image URL..."
+              />
+              <button
+                type="button"
+                onClick={addImage}
+                disabled={!imageUrl.trim()}
+                className="inline-flex items-center gap-1.5 bg-ink text-white font-body text-sm px-4 py-2.5 hover:bg-accent transition-colors shrink-0 disabled:opacity-40"
+              >
+                <PlusCircle size={14} />
+                Add
+              </button>
+            </div>
+
+            {/* Live preview + Drive conversion indicator */}
+            {imageUrl.trim() && (
+              <div className="flex items-start gap-3 bg-surface border border-border p-3">
+                <div className="w-20 h-14 overflow-hidden shrink-0 bg-border">
+                  <img
+                    src={getImageUrl(imageUrl.trim(), 'thumbnail')}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                    onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  {isGoogleDriveUrl(imageUrl.trim()) && (
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <CheckCircle2 size={12} className="text-green-600 shrink-0" />
+                      <span className="font-body text-[11px] text-green-700 font-medium">Google Drive detected — will be auto-converted to fast CDN URL</span>
+                    </div>
+                  )}
+                  <p className="font-body text-[11px] text-muted truncate">{resolveImageUrl(imageUrl.trim())}</p>
+                </div>
+              </div>
+            )}
           </div>
 
           {errors.images && <p className="font-body text-xs text-red-500">{errors.images}</p>}
@@ -245,8 +281,8 @@ export default function ProjectForm({ existing }: Props) {
             <div className="space-y-2">
               {form.images.map((img, i) => (
                 <div key={i} className="flex items-center gap-3 bg-surface border border-border p-2">
-                  <div className="w-12 h-9 overflow-hidden shrink-0 bg-border">
-                    <LazyImage src={img} alt="" className="w-full h-full" />
+                  <div className="w-14 h-10 overflow-hidden shrink-0 bg-border">
+                    <LazyImage src={img} alt="" size="thumbnail" className="w-full h-full" />
                   </div>
                   <p className="flex-1 font-body text-xs text-muted truncate">{img}</p>
                   <div className="flex items-center gap-2 shrink-0">

@@ -5,6 +5,7 @@ import { useProjects } from '../context/ProjectContext'
 import LazyImage from '../components/LazyImage'
 import SectionLabel from '../components/SectionLabel'
 import ProjectCard from '../components/ProjectCard'
+import { getImageUrl } from '../utils/imageUtils'
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>()
@@ -50,6 +51,7 @@ export default function ProjectDetail() {
         <LazyImage
           src={project.images[0]}
           alt={project.title}
+          size="hero"
           className="w-full h-full hover:scale-[1.02] transition-transform duration-700"
         />
       </div>
@@ -121,7 +123,7 @@ export default function ProjectDetail() {
                   className="relative group cursor-pointer overflow-hidden aspect-[4/3] bg-surface"
                   onClick={() => openLightbox(i)}
                 >
-                  <LazyImage src={img} alt={`${project.title} ${i + 1}`} className="w-full h-full" />
+                  <LazyImage src={img} alt={`${project.title} ${i + 1}`} size="cover" className="w-full h-full" />
                   <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/30 transition-all duration-300 flex items-center justify-center">
                     <Maximize2 size={20} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
@@ -172,7 +174,7 @@ export default function ProjectDetail() {
             onClick={e => e.stopPropagation()}
           >
             <img
-              src={project.images[lightboxIndex]}
+              src={getImageUrl(project.images[lightboxIndex], 'full')}
               alt={`${project.title} ${lightboxIndex + 1}`}
               className="w-full h-full object-contain max-h-[85vh]"
             />
